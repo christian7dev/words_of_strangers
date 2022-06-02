@@ -25,13 +25,14 @@ class _MainPageState extends State<MainPage> {
   List  data = [] ;
   late int index = 0 ;
 
+  List<String> sorts = ["Chronological" , "Like" , "Dislike" ];
+  String selected = 'Chronological';
+   var url1 = 'https://dagmawibabi.com/wot/getNotes/time/-1';
 
 
-  void sort(){
 
-  }
   Future getData() async {
-    var url = Uri.parse('https://dagmawibabi.com/wot/getNotes/time/-1');
+    var url = Uri.parse(url1);
     var _daat = await http.get(url);
     var jsondata = json.decode(_daat.body);
     data = jsondata;
@@ -49,6 +50,7 @@ class _MainPageState extends State<MainPage> {
       future: getData(),
         builder: (context, snapshot) {
         if(snapshot.hasData){
+
           return Scaffold(
                 backgroundColor: Color.fromRGBO(12, 26, 47, 1),
                 appBar: AppBar(
@@ -65,6 +67,9 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   elevation: 0,
+
+
+
                   title:const  Text(
                     "Words of Strangers",
                     style: TextStyle(
@@ -76,6 +81,11 @@ class _MainPageState extends State<MainPage> {
                   centerTitle: true,
                   backgroundColor: Color.fromRGBO(12, 26, 47, 1),
                   actions:[
+
+
+                    //post
+
+
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: InkWell(
@@ -102,9 +112,13 @@ class _MainPageState extends State<MainPage> {
                       children: [
 
 
+                        //note counter
+
+
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: Row(
+
                             children: [
                               Container(
                                 child: Padding(
@@ -113,23 +127,60 @@ class _MainPageState extends State<MainPage> {
                                     data.length.toString() + " notes so far",
                                     style: TextStyle(
                                       color: Colors.green,
-                                      fontSize: 20
+                                      fontSize: 15
                                     ),
                                   ),
                                 ),
                               ),
+                              SizedBox(width: 15,),
+                              Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.green
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(canvasColor: Colors.black38 ),
+                                    child: DropdownButton<String>(
+
+                                      underline: Container(),
+                                      value: selected,
+                                      items: sorts.map(
+                                              (e) => DropdownMenuItem<String>(
+                                                value: e,
+                                                  child: Text(
+                                                      e,
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.green
+                                                    ),
+                                                  )
+                                              )).toList(),
+                                      onChanged: (_value){
+                                        setState(() {
+                                          selected = _value!;
+                                          if(selected == "Chronological"){
+                                            url1 = 'https://dagmawibabi.com/wot/getNotes/time/-1';
+                                          }
+                                          else if (selected == "Like"){
+                                              url1 = 'https://dagmawibabi.com/wot/getNotes/likes/-1';
+                                          }
+                                          else if(selected == "Dislike"){
+                                            url1 = 'https://dagmawibabi.com/wot/getNotes/dislikes/-1';
+                                          }
+                                        });
+                                      },
+
+                                    ),
+                                  ),
+                                ),
+                              )
                               // DropdownButton(
-                              //     items: [
-                              //       DropdownMenuItem(
-                              //           child: Text("Chronological")
-                              //       ),
-                              //       DropdownMenuItem(
-                              //           child: Text("Like")
-                              //       ),
-                              //       DropdownMenuItem(
-                              //           child: Text("Dislike")
-                              //       ),
-                              //     ],
+
                               //     onChanged: _selected,
                               // )
                             ],
