@@ -32,9 +32,11 @@ class _PostPageState extends State<PostPage> {
         backgroundColor:const Color.fromRGBO(12, 26, 47, 1),
         centerTitle: true,
         title:const  Text(
-            "WORDS OF STRANGER",
+            "Words of Strangers",
           style: TextStyle(
-            color: Colors.white
+            color: Colors.white,
+            fontSize: 23,
+            fontWeight: FontWeight.bold
           ),
         ),
         
@@ -42,10 +44,15 @@ class _PostPageState extends State<PostPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+
+
+              //title block
+
+
               Padding(
-                padding: const EdgeInsets.only(top: 60.0 ,right: 20 , left: 30) ,
+                padding: const EdgeInsets.only(top: 60.0 ,right: 20 , left: 20) ,
                 child: Container(
-                  width: 350,
+                  width: 400,
                   decoration: BoxDecoration(
                     color: const Color.fromRGBO(12, 26, 47, 1),
                       boxShadow: const [
@@ -71,6 +78,10 @@ class _PostPageState extends State<PostPage> {
                       maxLines: 1,
                       maxLength: 100,
                       decoration: const InputDecoration(
+                        counterStyle: TextStyle(
+                          color: Colors.white54,
+                          fontSize: 15
+                        ),
                         hoverColor: Colors.white,
                         border: InputBorder.none,
                         hintText: "TITLE OF YOUR NOTE",
@@ -86,10 +97,14 @@ class _PostPageState extends State<PostPage> {
                 ),
               ),
 
+
+              //content block
+
+
               Padding(
-                padding: const EdgeInsets.only(top: 50.0 , left: 20 , right: 10),
+                padding: const EdgeInsets.only(top: 50.0 , left: 10 , right: 10),
                 child: Container(
-                  width: 350,
+                  width: 400,
                   decoration: BoxDecoration(
                     color: const Color.fromRGBO(12, 26, 47, 1),
                     border: Border.all(
@@ -115,6 +130,10 @@ class _PostPageState extends State<PostPage> {
                       maxLines: 10,
                       maxLength: 400,
                       decoration:const  InputDecoration(
+                          counterStyle: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 15
+                          ),
                         border: InputBorder.none,
                         hintText: "What do you want to say?",
                         hintStyle: TextStyle(
@@ -128,6 +147,10 @@ class _PostPageState extends State<PostPage> {
                   ),
                 ),
               ),
+
+
+
+              //post button
 
 
               Padding(
