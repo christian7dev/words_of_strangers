@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wos/post.dart';
+import 'widget/colors.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -12,6 +13,8 @@ void main() {
   ));
 }
 
+
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -19,29 +22,43 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+
+
+
 class _MainPageState extends State<MainPage> {
+
 
 
   List  data = [] ;
   late int index = 0 ;
+  Color maincolor = Colors.green;
 
   List<String> sorts = ["Chronological" , "Like" , "Dislike" ];
+  List<String> botsorts = ["ALL" , "BOTS" , "STRANGERS"];
+  String sort_selected = "ALL";
+
+
   String selected = 'Chronological';
    var url1 = 'https://dagmawibabi.com/wot/getNotes/time/-1';
 
 
+   int starter = 0;
 
   Future getData() async {
-    var url = Uri.parse(url1);
-    var _daat = await http.get(url);
-    var jsondata = json.decode(_daat.body);
-    data = jsondata;
-    return 1;
+    if(starter == 0){
+      var url = Uri.parse(url1);
+      var _daat = await http.get(url);
+      var jsondata = json.decode(_daat.body);
+      data = jsondata;
+    }
+
+     return 1;
   }
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => getData());
+    getData();
+    //WidgetsBinding.instance?.addPostFrameCallback((_) => getData());
   }
 
   @override
@@ -50,7 +67,6 @@ class _MainPageState extends State<MainPage> {
       future: getData(),
         builder: (context, snapshot) {
         if(snapshot.hasData){
-
           return Scaffold(
                 backgroundColor: Color.fromRGBO(12, 26, 47, 1),
                 appBar: AppBar(
@@ -73,6 +89,7 @@ class _MainPageState extends State<MainPage> {
                   title:const  Text(
                     "Words of Strangers",
                     style: TextStyle(
+
                         color: Colors.white,
                         fontSize: 23,
                         fontWeight: FontWeight.bold
@@ -80,8 +97,8 @@ class _MainPageState extends State<MainPage> {
                   ),
                   centerTitle: true,
                   backgroundColor: Color.fromRGBO(12, 26, 47, 1),
-                  actions:[
 
+                  actions:[
 
                     //post
 
@@ -126,59 +143,14 @@ class _MainPageState extends State<MainPage> {
                                   child: Text(
                                     data.length.toString() + " notes so far",
                                     style: TextStyle(
-                                      color: Colors.green,
+                                      color:  maincolor,
                                       fontSize: 15
                                     ),
                                   ),
                                 ),
                               ),
                               SizedBox(width: 15,),
-                              Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.green
-                                  ),
-                                  borderRadius: BorderRadius.circular(20)
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(canvasColor: Colors.black38 ),
-                                    child: DropdownButton<String>(
 
-                                      underline: Container(),
-                                      value: selected,
-                                      items: sorts.map(
-                                              (e) => DropdownMenuItem<String>(
-                                                value: e,
-                                                  child: Text(
-                                                      e,
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.green
-                                                    ),
-                                                  )
-                                              )).toList(),
-                                      onChanged: (_value){
-                                        setState(() {
-                                          selected = _value!;
-                                          if(selected == "Chronological"){
-                                            url1 = 'https://dagmawibabi.com/wot/getNotes/time/-1';
-                                          }
-                                          else if (selected == "Like"){
-                                              url1 = 'https://dagmawibabi.com/wot/getNotes/likes/-1';
-                                          }
-                                          else if(selected == "Dislike"){
-                                            url1 = 'https://dagmawibabi.com/wot/getNotes/dislikes/-1';
-                                          }
-                                        });
-                                      },
-
-                                    ),
-                                  ),
-                                ),
-                              )
                               // DropdownButton(
 
                               //     onChanged: _selected,
@@ -196,15 +168,15 @@ class _MainPageState extends State<MainPage> {
                               //width: 390,
                               decoration: BoxDecoration(
                                   color: Color.fromRGBO(12, 26, 47, 1),
-                                  boxShadow: const [BoxShadow(
-                                    color: Colors.green,
+                                  boxShadow:  [BoxShadow(
+                                    color: data[index]["color"].toString().toColor(),
                                     offset: Offset(0,1),
                                     blurRadius: 20,
                                   )],
                                   borderRadius: BorderRadius.circular(30),
                                   border: Border.all(
                                       width: 4,
-                                      color: Colors.green,
+                                      color: data[index]["color"].toString().toColor(),
                                       style: BorderStyle.solid
                                   )
                               ),
@@ -214,61 +186,63 @@ class _MainPageState extends State<MainPage> {
                                   children: [
 
                                     //title
-                                    
-                                    SizedBox(
-                                      height: 60,
-                                      child:
-                                      ListView(
-                                        scrollDirection: Axis.horizontal,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 10.0 , left: 10),
-                                            child: Text(
-                                              data[index]["title"],
-                                              style: const TextStyle(
+
+                                      Container(
+                                        height: 60,
+                                        child:
+                                        ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 10.0 , left: 10),
+                                              child: Text(
+                                                data[index]["title"],
+                                                style:  TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 20,
-                                                  color: Colors.white
-                                              ),
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-
-
-                                    //content
-
-
-                                    Container(
-                                      color: Colors.black45.withBlue(50),
-                                      height: 310,
-                                      child: ListView(
-                                        scrollDirection: Axis.vertical,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 20.0),
-                                            child: Center(
-                                              child: Text(
-                                               data[index]['content'],
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 22
+                                                  color: data[index]["color"].toString().toColor(),
                                                 ),
                                               ),
                                             ),
-                                          )
-                                        ],
+
+                                          ],
+                                        ),
                                       ),
-                                    ),
+
+                                      //content
+                                      Container(
+                                        color: Colors.black45.withBlue(50),
+                                        height: 310,
+                                        child: ListView(
+                                          scrollDirection: Axis.vertical,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 20.0),
+                                              child: Center(
+                                                child: Text(
+                                                  data[index]['content'],
+                                                  style: TextStyle(
+                                                    fontSize: 22,
+
+                                                    color: data[index]["color"].toString().toColor(),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+
+
+
+
                                     Container(
                                       height: 20,
 
                                       child: Text(
                                         data[index]['time'] + "-" + data[index]['date'],
                                         style: TextStyle(
-                                          color: Colors.green
+                                          color: maincolor
                                         ),
                                       ),
                                     )
@@ -364,17 +338,18 @@ class _MainPageState extends State<MainPage> {
                                 onTap: (){
                                   setState(() {
                                     index--;
+
                                   });
                                 },
                                 child: Container(
-                                  height: 70,
+                                  height: 50,
                                   width: 100,
                                   decoration: BoxDecoration(
                                       color: Color.fromRGBO(12, 26, 47, 1),
                                       borderRadius: BorderRadius.circular(30),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.green.shade500,
+                                        color: maincolor,
                                         offset: const Offset(0,0),
                                         blurRadius: 15
                                       )
@@ -388,7 +363,7 @@ class _MainPageState extends State<MainPage> {
                                     )
                                   ),
                                 ),
-                              ) : Container(width: 100,height:70 ,),
+                              ) : Container(width: 100,height:50 ,),
 
 
 
@@ -412,17 +387,18 @@ class _MainPageState extends State<MainPage> {
                                 onTap: (){
                                   setState(() {
                                     index++;
+
                                   });
                                 },
                                 child: Container(
-                                  height: 70,
+                                  height: 50,
                                   width: 100,
                                   decoration: BoxDecoration(
                                       color: const Color.fromRGBO(12, 26, 47, 1),
                                       borderRadius: BorderRadius.circular(30),
                                       boxShadow: [
                                   BoxShadow(
-                                  color: Colors.green.shade500,
+                                  color: maincolor,
                                       offset: const Offset(0,0),
                                       blurRadius: 15
                                   )]
@@ -438,14 +414,133 @@ class _MainPageState extends State<MainPage> {
                               ) :  Container(width: 100,height:70 ,),
                             ],
                           ),
-                        )
+                        ),
 
+
+
+                        //sort widgets
+
+
+                        Container(
+                          height: 70,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+
+
+                                // sort
+
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                   height: 40,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: maincolor
+                                        ),
+                                        borderRadius: BorderRadius.circular(20)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(canvasColor: Colors.black38 ),
+                                        child: DropdownButton<String>(
+                                          //menuMaxHeight: 50,
+                                          underline: Container(),
+                                          value: selected,
+                                          items: sorts.map(
+                                                  (e) => DropdownMenuItem<String>(
+                                                  value: e,
+                                                  child: Text(
+                                                    e,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        color: maincolor
+                                                    ),
+                                                  )
+                                              )).toList(),
+                                          onChanged: (_value){
+                                            setState(() {
+                                              selected = _value!;
+                                              if(selected == "Chronological"){
+                                                url1 = ('https://dagmawibabi.com/wot/getNotes/time/-1');
+                                                index = 0;
+                                              }
+                                              else if (selected == "Like"){
+                                                url1 = 'https://dagmawibabi.com/wot/getNotes/likes/-1';
+                                                index = 0;
+                                              }
+                                              else if(selected == "Dislike"){
+                                                url1 = 'https://dagmawibabi.com/wot/getNotes/dislikes/-1';
+                                                index = 0;
+                                              }
+                                            });
+                                          },
+
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+
+
+                                // bot sort
+
+                                Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: maincolor
+                                      ),
+                                      borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(canvasColor: Colors.black38 ),
+                                      child: DropdownButton<String>(
+
+                                        underline: Container(),
+                                        value: sort_selected,
+                                        items: botsorts.map(
+                                                (e) => DropdownMenuItem<String>(
+                                                value: e,
+                                                child: Text(
+                                                  e,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: maincolor
+                                                  ),
+                                                )
+                                            )).toList(),
+                                        onChanged: (_value){
+                                          setState(() {
+                                            sort_selected = _value!;
+
+                                          });
+                                        },
+
+                                      ),
+                                    ),
+                                  ),
+                                )
+
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                       ],
                     ),
                   ),
                 ),
           );
-        }
+    };
          return const MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
