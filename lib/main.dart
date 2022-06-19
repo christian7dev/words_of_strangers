@@ -15,6 +15,7 @@ void main() {
 
 
 
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -24,41 +25,61 @@ class MainPage extends StatefulWidget {
 
 
 
+List  data = [] ;
+late int index = 0 ;
+var url1 = 'https://dagmawibabi.com/wot/getNotes/time/-1';
+
+Color maincolor = Colors.green;
+
+List<String> sorts = ["Chronological" , "Like" , "Dislike" ];
+List<String> botsorts = ["ALL" , "BOTS" , "STRANGERS"];
+String sort_selected = "ALL";
+List bots = [];
+List people = [];
+
+String selected = 'Chronological';
+
+void test(){
+
+
+  int y = 0;
+  while(y < data.length){
+    if(data[y]["isBot"] == true){
+      bots.add(y);
+    }
+    if(data[y]["isBot"] == false){
+      people.add(y);
+    }
+    y++;
+  }
+
+}
+
+
+Future getData() async {
+  var url = Uri.parse(url1);
+  var _daat = await http.get(url);
+  var jsondata = json.decode(_daat.body);
+  data = jsondata;
+  return 1;
+}
+
+
 
 class _MainPageState extends State<MainPage> {
 
 
 
-  List  data = [] ;
-  late int index = 0 ;
-  Color maincolor = Colors.green;
-
-  List<String> sorts = ["Chronological" , "Like" , "Dislike" ];
-  List<String> botsorts = ["ALL" , "BOTS" , "STRANGERS"];
-  String sort_selected = "ALL";
 
 
-  String selected = 'Chronological';
-   var url1 = 'https://dagmawibabi.com/wot/getNotes/time/-1';
 
 
-   int starter = 0;
 
-  Future getData() async {
-    if(starter == 0){
-      var url = Uri.parse(url1);
-      var _daat = await http.get(url);
-      var jsondata = json.decode(_daat.body);
-      data = jsondata;
-    }
-
-     return 1;
-  }
   @override
   void initState() {
     super.initState();
-    getData();
-    //WidgetsBinding.instance?.addPostFrameCallback((_) => getData());
+    getData().then((value) => test());
+
   }
 
   @override
@@ -159,104 +180,108 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
 
+                         //body
 
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Center(
-                            child: Container(
-                              // height: 410,
-                              //width: 390,
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(12, 26, 47, 1),
-                                  boxShadow:  [BoxShadow(
-                                    color: data[index]["color"].toString().toColor(),
-                                    offset: Offset(0,1),
-                                    blurRadius: 20,
-                                  )],
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(
-                                      width: 4,
-                                      color: data[index]["color"].toString().toColor(),
-                                      style: BorderStyle.solid
-                                  )
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10.0 , horizontal: 10),
-                                child: Column(
-                                  children: [
+                         Padding(
+                           padding: const EdgeInsets.only(top: 20.0),
+                           child: Center(
+                             child: Container(
 
-                                    //title
+                               decoration: BoxDecoration(
+                                   color: Color.fromRGBO(12, 26, 47, 1),
+                                   boxShadow:  [BoxShadow(
+                                     color: data[index]["color"].toString().toColor(),
+                                     offset: Offset(0,1),
+                                     blurRadius: 20,
+                                   )],
+                                   borderRadius: BorderRadius.circular(30),
+                                   border: Border.all(
+                                       width: 4,
+                                       color: data[index]["color"].toString().toColor(),
+                                       style: BorderStyle.solid
+                                   )
+                               ),
+                               child: Padding(
+                                 padding: const EdgeInsets.symmetric(vertical: 10.0 , horizontal: 10),
+                                 child: Column(
+                                   children: [
 
-                                      Container(
-                                        height: 60,
-                                        child:
-                                        ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 10.0 , left: 10),
-                                              child: Text(
-                                                data[index]["title"],
-                                                style:  TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20,
-                                                  color: data[index]["color"].toString().toColor(),
-                                                ),
-                                              ),
-                                            ),
+                                     //title
 
-                                          ],
-                                        ),
-                                      ),
+                                     Container(
+                                       height: 60,
+                                       child:
+                                       ListView(
+                                         scrollDirection: Axis.horizontal,
+                                         children: [
+                                           Padding(
+                                             padding: const EdgeInsets.only(top: 10.0 , left: 10),
+                                             child: Text(
+                                               sort_selected == "BOTS" ? data[bots[index]]["title"] :
+                                               sort_selected == "STRANGERS" ? data[people[index]]["title"]:
+                                               data[index]["title"],
+                                               style:  TextStyle(
+                                                 fontWeight: FontWeight.bold,
+                                                 fontSize: 20,
+                                                 color: data[index]["color"].toString().toColor(),
+                                               ),
+                                             ),
+                                           ),
 
-                                      //content
-                                      Container(
-                                        color: Colors.black45.withBlue(50),
-                                        height: 310,
-                                        child: ListView(
-                                          scrollDirection: Axis.vertical,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 20.0),
-                                              child: Center(
-                                                child: Text(
-                                                  data[index]['content'],
-                                                  style: TextStyle(
-                                                    fontSize: 22,
+                                         ],
+                                       ),
+                                     ),
 
-                                                    color: data[index]["color"].toString().toColor(),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                     //content
+
+                                     Container(
+                                       color: Colors.black45.withBlue(50),
+                                       height: 310,
+                                       child: ListView(
+                                         scrollDirection: Axis.vertical,
+                                         children: [
+                                           Padding(
+                                             padding: const EdgeInsets.only(top: 20.0),
+                                             child: Center(
+                                               child: Text(
+                                                 sort_selected == "BOTS" ? data[bots[index]]["content"] :
+                                                 sort_selected == "STRANGERS" ? data[people[index]]["content"]:
+                                                 data[index]['content'],
+
+                                                 style: TextStyle(
+                                                   fontSize: 22,
+
+                                                   color: data[index]["color"].toString().toColor(),
+                                                 ),
+                                               ),
+                                             ),
+                                           )
+                                         ],
+                                       ),
+                                     ),
 
 
 
 
-                                    Container(
-                                      height: 20,
+                                     Container(
+                                       height: 20,
 
-                                      child: Text(
-                                        data[index]['time'] + "-" + data[index]['date'],
-                                        style: TextStyle(
-                                          color: maincolor
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                                       child: Text(
+                                         data[index]['time'] + "-" + data[index]['date'],
+                                         style: TextStyle(
+                                             color: maincolor
+                                         ),
+                                       ),
+                                     )
+                                   ],
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
 
 
                         //like button
-
-
 
                         Padding(
                           padding: const EdgeInsets.only(top: 25.0 , left: 50 , right: 50 , bottom: 15),
@@ -328,6 +353,9 @@ class _MainPageState extends State<MainPage> {
                         ),
 
 
+                        // buttons
+
+
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0 , right: 20 , left: 20 ),
                           child: Row(
@@ -383,7 +411,7 @@ class _MainPageState extends State<MainPage> {
 
 
 
-                              ((index+1) != data.length) ? GestureDetector(
+                              sort_selected == "ALL" ? (index+1) != data.length ? GestureDetector(
                                 onTap: (){
                                   setState(() {
                                     index++;
@@ -411,15 +439,71 @@ class _MainPageState extends State<MainPage> {
                                     )
                                   ),
                                 )
-                              ) :  Container(width: 100,height:70 ,),
+                              ) : Container(width: 100,height:50 ,) :
+                              sort_selected == "BOTS" ? (index+1) != bots.length ?  GestureDetector(
+                                  onTap: (){
+                                    setState(() {
+                                      index++;
+
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 50,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        color: const Color.fromRGBO(12, 26, 47, 1),
+                                        borderRadius: BorderRadius.circular(30),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: maincolor,
+                                              offset: const Offset(0,0),
+                                              blurRadius: 15
+                                          )]
+                                    ),
+                                    child: const Center(
+                                        child: Icon(
+                                          Icons.navigate_next_rounded,
+                                          color: Colors.white,
+                                          size: 30,
+                                        )
+                                    ),
+                                  )
+                              ) : Container(width: 100,height:50 ,) :
+                                  sort_selected == "STRANGERS" ?  (index+1) != people.length ? GestureDetector(
+                                      onTap: (){
+                                        setState(() {
+                                          index++;
+
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                            color: const Color.fromRGBO(12, 26, 47, 1),
+                                            borderRadius: BorderRadius.circular(30),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: maincolor,
+                                                  offset: const Offset(0,0),
+                                                  blurRadius: 15
+                                              )]
+                                        ),
+                                        child: const Center(
+                                            child: Icon(
+                                              Icons.navigate_next_rounded,
+                                              color: Colors.white,
+                                              size: 30,
+                                            )
+                                        ),
+                                      )
+                                  ) : Container(width: 100,height:50 ,) : Container(width: 100,height:50 ,)
                             ],
                           ),
                         ),
 
 
-
                         //sort widgets
-
 
                         Container(
                           height: 70,
@@ -519,6 +603,7 @@ class _MainPageState extends State<MainPage> {
                                         onChanged: (_value){
                                           setState(() {
                                             sort_selected = _value!;
+                                            index=0;
 
                                           });
                                         },
@@ -554,3 +639,4 @@ class _MainPageState extends State<MainPage> {
 
   }
 }
+
